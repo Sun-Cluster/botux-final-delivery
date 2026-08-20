@@ -1,0 +1,86 @@
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 999px;
+}
+
+[data-slot="card"] {
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+[data-slot="card"]:hover {
+  border-color: var(--border);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes botux-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.18);
+  }
+
+  50% {
+    opacity: 0.82;
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0);
+  }
+}
+
+.dot-pulse {
+  animation: botux-pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes botux-progress {
+  0% {
+    width: 20%;
+  }
+
+  50% {
+    width: 80%;
+  }
+
+  100% {
+    width: 20%;
+  }
+}
+
+.animate-progress {
+  animation: botux-progress 3s ease-in-out infinite;
+}
+
+@keyframes botux-flash {
+  0% {
+    background: rgba(var(--accent-rgb), 0.15);
+  }
+
+  100% {
+    background: transparent;
+  }
+}
+
+.animate-flash {
+  animation: botux-flash 2s ease-out;
+}
+
+@keyframes botux-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

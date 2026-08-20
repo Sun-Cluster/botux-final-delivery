@@ -1,0 +1,35 @@
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans antialiased;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    min-height: 100vh;
+    background-image: var(--app-background);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  ::selection {
+    background: rgba(var(--accent-rgb), 0.22);
+  }
+
+  main > div {
+    animation: botux-fade-in 0.18s ease-out;
+  }
+}

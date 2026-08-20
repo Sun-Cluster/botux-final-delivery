@@ -1,0 +1,78 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: botux-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: botux
+      POSTGRES_PASSWORD: botux
+      POSTGRES_DB: botux
+    ports:
+      - "5432:5432"
+    volumes:
+      - botux_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U botux -d botux"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: botux-api
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./.env:/app/.env:ro
+    environment:
+      BOTUX_ENV: docker
+      BOTUX_API_HOST: 0.0.0.0
+      BOTUX_API_PORT: 8000
+      BOTUX_DB_URI: postgres://botux:botux@postgres:5432/botux
+      BOTUX_DB_AUTO_SCHEMA: "1"
+      IBKR_HOST: host.docker.internal
+    ports:
+      - "8001:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()",
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: botux-dashboard
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./.env:/app/.env:ro
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      BOTUX_API_UPSTREAM: http://api:8000
+      HOSTNAME: 0.0.0.0
+      PORT: 3001
+    ports:
+      - "3001:3001"
+
+volumes:
+  botux_pgdata:
